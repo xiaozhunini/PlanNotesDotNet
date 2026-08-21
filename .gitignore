@@ -1,0 +1,16 @@
+# Visual Studio 缓存
+.vs/
+
+# 编译输出
+bin/
+obj/
+Debug/
+Release/
+
+# 用户配置文件
+*.user
+*.suo
+
+# 系统文件
+Thumbs.db
+.DS_Store
