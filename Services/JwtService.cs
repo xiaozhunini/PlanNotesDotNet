@@ -75,13 +75,15 @@ namespace PlanNoteServer.Services
         public string GenerateAccessToken(Users user)
         {
             // 构建 Claims 声明集合，携带用户的核心身份信息放入 Token 中
+            // 角色已迁移到 user_roles 关联表（多对多），此处不再从 Users.RoleType 取值。
+            // TODO: 生成 Token 前应通过 IUserRolesRepository 查询用户绑定的所有角色，
+            //       并为每个角色添加一条 ClaimTypes.Role 声明，以支持 [Authorize(Roles=...)] 鉴权。
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.OpenId),
                 new Claim("openid", user.OpenId),
                 new Claim("nickname", user.NickName ?? string.Empty),
-                new Claim(ClaimTypes.Role, user.RoleType.ToString()),
                 new Claim("status", user.UserStatus.ToString())
             };
 

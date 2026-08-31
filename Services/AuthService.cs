@@ -48,13 +48,13 @@ namespace PlanNoteServer.Services
             }
 
             // 2. 构建新用户实体并设置默认属性
+            // 角色已迁移到 user_roles 关联表，新建用户后应在业务层为其绑定默认角色
             var user = new Users
             {
                 OpenId = request.OpenId,
                 UnionId = request.UnionId,
                 NickName = request.NickName ?? string.Empty,
                 AvatarUrl = request.AvatarUrl,
-                RoleType = 1,        // 默认普通用户
                 UserStatus = 0       // 默认正常状态
             };
 
@@ -83,12 +83,12 @@ namespace PlanNoteServer.Services
             if (user == null)
             {
                 // 2. 用户不存在则自动创建（首次登录即注册）
+                // 角色已迁移到 user_roles 关联表，新建用户后应绑定默认角色
                 user = new Users
                 {
                     OpenId = openId,
                     NickName = request.NickName ?? string.Empty,
                     AvatarUrl = request.AvatarUrl,
-                    RoleType = 1,
                     UserStatus = 0,
                     LastLoginTime = DateTime.Now
                 };

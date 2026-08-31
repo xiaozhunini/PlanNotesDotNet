@@ -48,10 +48,7 @@ namespace PlanNoteServer.Data.Configurations
                 .HasMaxLength(20)
                 .IsUnicode(false);
 
-            // RoleType：角色类型（1普通用户/2编辑/3管理员），默认 1
-            builder.Property(u => u.RoleType)
-                .IsRequired()
-                .HasDefaultValue((byte)1);
+            // 角色已迁移到 user_roles 关联表，Users 表不再有 RoleType 字段
 
             // UserStatus：账号状态（0正常/1禁用），默认 0
             builder.Property(u => u.UserStatus)

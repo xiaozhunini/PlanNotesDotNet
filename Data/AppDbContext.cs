@@ -12,6 +12,7 @@ namespace PlanNoteServer.Data
         {
         }
 
+        #region 实体集合定义
         /// <summary>
         /// 用户实体集合
         /// </summary>
@@ -31,6 +32,11 @@ namespace PlanNoteServer.Data
         /// 角色-权限关联集合（RBAC：一个角色绑定哪些权限，对应表 role_permissions）
         /// </summary>
         public DbSet<RolePermissions> RolePermissions { get; set; }
+
+        /// <summary>
+        /// 用户-角色关联集合（RBAC：一个用户绑定哪些角色，对应表 user_roles）
+        /// </summary>
+        public DbSet<UserRoles> UserRoles { get; set; }
 
         /// <summary>
         /// 用户登录凭证集合（账号密码登录体系，对应表 user_credentials，可选绑定 1:1 Users）
@@ -56,6 +62,8 @@ namespace PlanNoteServer.Data
         /// 每日复盘集合（对应表 daily_reflections，一日三阶段反思 + 当日平均得分，1用户1天1条）
         /// </summary>
         public DbSet<DailyReflections> DailyReflections { get; set; }
+        #endregion
+
 
         /// <summary>
         /// 配置实体映射（自动扫描程序集中所有实现了 IEntityTypeConfiguration<T> 的配置类，从而将实体的字段约束、索引、表名等配置应用到数据库）
@@ -69,6 +77,8 @@ namespace PlanNoteServer.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
 
+        #region 自动维护时间戳设置
+
         public override int SaveChanges()
         {
             UpdateTimestamps();
@@ -80,7 +90,7 @@ namespace PlanNoteServer.Data
             UpdateTimestamps();
             return base.SaveChangesAsync(cancellationToken);
         }
-
+        
         /// <summary>
         /// UpdateTimestamps （方法作用是每次进行事务的时候添加操作），ChangeTracker  变更追踪器
         /// </summary>
@@ -95,5 +105,6 @@ namespace PlanNoteServer.Data
                 }
             }
         }
+        #endregion
     }
 }
