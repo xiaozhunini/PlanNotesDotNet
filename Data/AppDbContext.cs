@@ -92,16 +92,21 @@ namespace PlanNoteServer.Data
         }
         
         /// <summary>
-        /// UpdateTimestamps （方法作用是每次进行事务的时候添加操作），ChangeTracker  变更追踪器
+        /// UpdateTimestamps（每次事务时自动维护 UpdatedAt 字段）
+        /// 遍历所有被追踪的实体，通过反射检查是否有 UpdatedAt 属性，有则自动填充当前时间。
+        /// 这样无需强制所有实体继承基类或实现特定接口，灵活性更高。
         /// </summary>
         private void UpdateTimestamps()
         { 
-            var entries = ChangeTracker.Entries<BaseEntity>();
-            foreach (var entry in entries)
+            foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.State == EntityState.Modified)
                 {
-                    entry.Entity.UpdatedAt = DateTime.Now;
+                    var prop = entry.Entity.GetType().GetProperty("UpdatedAt");
+                    if (prop != null && prop.CanWrite)
+                    {
+                        prop.SetValue(entry.Entity, DateTime.Now);
+                    }
                 }
             }
         }

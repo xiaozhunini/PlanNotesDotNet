@@ -5,14 +5,40 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace PlanNoteServer.Data.Configurations
 {
     /// <summary>
-    /// 微信用户实体配置（字段长度、唯一索引、默认值等约束）
+    /// 微信用户实体配置（字段长度、唯一索引、默认值、软删除查询过滤器）
     /// </summary>
-    public class UsersConfiguration : BaseEntityConfiguration<Users>
+    public class UsersConfiguration : IEntityTypeConfiguration<Users>
     {
-        public override void Configure(EntityTypeBuilder<Users> builder)
+        public void Configure(EntityTypeBuilder<Users> builder)
         {
-            // 先调用基类配置（主键、时间字段、软删除等）
-            base.Configure(builder);
+            // ===== 原 BaseEntityConfiguration 内联 =====
+
+            // 主键：Id（BIGINT 自增）
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id)
+                .UseIdentityColumn();
+
+            // 创建时间（默认 GETDATE）
+            builder.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasDefaultValueSql("GETDATE()");
+
+            // 更新时间（可空，首次更新时自动填充）
+            builder.Property(e => e.UpdatedAt)
+                .IsRequired(false);
+
+            // 软删除标记（默认 false）
+            builder.Property(e => e.IsDeleted)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            // 全局查询过滤器：所有 LINQ 查询自动过滤掉软删除记录
+            builder.HasQueryFilter(e => !e.IsDeleted);
+
+            // 创建时间索引
+            builder.HasIndex(e => e.CreatedAt);
+
+            // ===== 业务字段配置 =====
 
             // 表名
             builder.ToTable("Users");

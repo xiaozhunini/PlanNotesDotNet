@@ -9,7 +9,7 @@ namespace PlanNoteServer.Repositories
     /// 通用仓储实现
     /// </summary>
     /// <typeparam name="T">实体类型</typeparam>
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly AppDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -89,15 +89,16 @@ namespace PlanNoteServer.Repositories
             var entity = await GetByIdAsync(id);
             if (entity == null) return false;
 
-            entity.IsDeleted = true;
-            entity.UpdatedAt = DateTime.Now;
+            // 直接物理删除（不再依赖软删除标记，因为不是所有实体都有 IsDeleted 字段）
+            _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> HardDeleteAsync(long id)
         {
-            var entity = await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(e => e.Id == id);
+            var entity = await _dbSet.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(e => EF.Property<long>(e, "Id") == id);
             if (entity == null) return false;
 
             _dbSet.Remove(entity);

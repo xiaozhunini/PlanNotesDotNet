@@ -7,7 +7,7 @@ namespace PlanNoteServer.Repositories
     /// 通用仓储接口
     /// </summary>
     /// <typeparam name="T">实体类型</typeparam>
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : class
     {
         /// <summary>
         /// 根据ID获取实体

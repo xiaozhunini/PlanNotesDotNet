@@ -3,8 +3,32 @@ namespace PlanNoteServer.Models
     /// <summary>
     /// 微信用户实体（小程序用户信息）
     /// </summary>
-    public class Users : BaseEntity
+    public class Users
     {
+        // ===== 公共字段（原 BaseEntity 内联到此处）=====
+
+        /// <summary>
+        /// 主键 ID（BIGINT，自增）
+        /// </summary>
+        public long Id { get; set; }
+
+        /// <summary>
+        /// 创建时间（注册时间）
+        /// </summary>
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// 是否删除（软删除标记，默认 false）
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
+
+        // ===== 业务字段 =====
+
         /// <summary>
         /// 微信唯一标识（openid）
         /// </summary>

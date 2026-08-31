@@ -14,3 +14,6 @@ Release/
 # 系统文件
 Thumbs.db
 .DS_Store
+
+# 不提交的本地用户配置
+.sln

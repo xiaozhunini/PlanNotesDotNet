@@ -31,7 +31,6 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPasswordHasher<PlanNoteServer.Models.Users>, PasswordHasher<PlanNoteServer.Models.Users>>();
 
 // 注册服务
-builder.Services.AddScoped(typeof(IService<,,,>), typeof(Service<,,,>));
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
