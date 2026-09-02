@@ -153,6 +153,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// 初始化数据库种子数据（自动迁移 + 灌入 RBAC 基础数据和管理员账号；幂等：已有则跳过）
+await DbSeeder.SeedAsync(app.Services);
+
 // 配置HTTP请求管道
 if (app.Environment.IsDevelopment())
 {
