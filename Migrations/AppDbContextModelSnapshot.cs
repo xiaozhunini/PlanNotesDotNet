@@ -163,7 +163,7 @@ namespace PlanNotesServer.Migrations
 
                     b.HasIndex("PermissionModule");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("permissions", (string)null);
                 });
 
             modelBuilder.Entity("PlanNoteServer.Models.RolePermissions", b =>
@@ -217,7 +217,7 @@ namespace PlanNotesServer.Migrations
                     b.HasIndex("RolesName")
                         .IsUnique();
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("PlanNoteServer.Models.UserCredentials", b =>
@@ -323,14 +323,6 @@ namespace PlanNotesServer.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UnionId")
                         .HasMaxLength(64)
                         .IsUnicode(false)
@@ -353,7 +345,7 @@ namespace PlanNotesServer.Migrations
 
                     b.HasIndex("UnionId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("PlanNoteServer.Models.WeeklyPlans", b =>

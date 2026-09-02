@@ -11,8 +11,8 @@ namespace PlanNoteServer.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Roles> builder)
         {
-            // 表名
-            builder.ToTable("Roles");
+            // 表名（数据库统一使用小写下划线命名）
+            builder.ToTable("roles");
 
             // 主键
             builder.HasKey(r => r.Id);

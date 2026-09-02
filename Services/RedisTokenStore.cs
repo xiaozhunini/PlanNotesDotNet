@@ -35,12 +35,13 @@ namespace PlanNoteServer.Services
             var familyKey = FamilyKey(familyId);
 
             // 写入 Hash（status=active）
+            // 注意：Redis Hash 字段值不允许为 null，新建 token 时 replaced 字段先不写入，
+            // 等 MarkUsedAsync 轮转时再写入新 token 的 SHA。GetAsync 用 GetValueOrDefault 读取，缺失即 null。
             await _db.HashSetAsync(key, new HashEntry[]
             {
                 new("uid", userId.ToString()),
                 new("family", familyId.ToString()),
                 new("status", "active"),
-                new("replaced", RedisValue.Null),
                 new("created", DateTimeOffset.UtcNow.ToUnixTimeSeconds())
             });
 

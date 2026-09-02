@@ -12,7 +12,7 @@ namespace PlanNotesServer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Permissions",
+                name: "permissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -23,11 +23,11 @@ namespace PlanNotesServer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.PrimaryKey("PK_permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -39,11 +39,11 @@ namespace PlanNotesServer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "users",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -57,13 +57,11 @@ namespace PlanNotesServer.Migrations
                     AvatarUrl = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
                     Phone = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true),
                     UserStatus = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0),
-                    LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RefreshToken = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,13 +77,13 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_role_permissions_permissions_PermissionID",
                         column: x => x.PermissionID,
-                        principalTable: "Permissions",
+                        principalTable: "permissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_role_permissions_roles_RoleID",
                         column: x => x.RoleID,
-                        principalTable: "Roles",
+                        principalTable: "roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -110,7 +108,7 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_daily_reflections_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -140,7 +138,7 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_daily_schedules_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -162,7 +160,7 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_user_credentials_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -181,13 +179,13 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_user_roles_roles_RoleID",
                         column: x => x.RoleID,
-                        principalTable: "Roles",
+                        principalTable: "roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_user_roles_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -214,7 +212,7 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_yearly_goals_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -240,7 +238,7 @@ namespace PlanNotesServer.Migrations
                     table.ForeignKey(
                         name: "FK_weekly_plans_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -282,14 +280,14 @@ namespace PlanNotesServer.Migrations
                 columns: new[] { "UserID", "PlanDate", "SortOrder" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permissions_PermissionCode",
-                table: "Permissions",
+                name: "IX_permissions_PermissionCode",
+                table: "permissions",
                 column: "PermissionCode",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permissions_PermissionModule",
-                table: "Permissions",
+                name: "IX_permissions_PermissionModule",
+                table: "permissions",
                 column: "PermissionModule");
 
             migrationBuilder.CreateIndex(
@@ -298,13 +296,13 @@ namespace PlanNotesServer.Migrations
                 column: "PermissionID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Roles_CreatedAt",
-                table: "Roles",
+                name: "IX_roles_CreatedAt",
+                table: "roles",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Roles_RolesName",
-                table: "Roles",
+                name: "IX_roles_RolesName",
+                table: "roles",
                 column: "RolesName",
                 unique: true);
 
@@ -326,19 +324,19 @@ namespace PlanNotesServer.Migrations
                 column: "RoleID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_CreatedAt",
-                table: "Users",
+                name: "IX_users_CreatedAt",
+                table: "users",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_OpenId",
-                table: "Users",
+                name: "IX_users_OpenId",
+                table: "users",
                 column: "OpenId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_UnionId",
-                table: "Users",
+                name: "IX_users_UnionId",
+                table: "users",
                 column: "UnionId");
 
             migrationBuilder.CreateIndex(
@@ -405,16 +403,16 @@ namespace PlanNotesServer.Migrations
                 name: "weekly_plans");
 
             migrationBuilder.DropTable(
-                name: "Permissions");
+                name: "permissions");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "yearly_goals");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "users");
         }
     }
 }

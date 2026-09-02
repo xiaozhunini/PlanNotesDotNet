@@ -64,19 +64,7 @@ namespace PlanNoteServer.Models
         /// </summary>
         public DateTime? LastLoginTime { get; set; }
 
-        // ===== 以下字段为 JWT 认证基础设施，不在核心业务表设计中 =====
         // 角色已迁移到 user_roles 关联表（多对多），Users 表不再存 RoleType。
-        // RefreshToken 暂存于此以支撑现有令牌轮转流程，后续建议迁移到独立的
-        // refresh_tokens 表（含 FamilyId / RevokedAt / ReplacedByToken）以支持复用检测。
-
-        /// <summary>
-        /// 当前刷新令牌（用于令牌轮转，登出时清空）
-        /// </summary>
-        public string? RefreshToken { get; set; }
-
-        /// <summary>
-        /// 刷新令牌过期时间
-        /// </summary>
-        public DateTime? RefreshTokenExpiryTime { get; set; }
+        // RefreshToken 已迁移到 Redis（RedisTokenStore），Users 表不再存令牌相关字段。
     }
 }

@@ -3,6 +3,8 @@ using PlanNoteServer.DTOs.Auth;
 using PlanNoteServer.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlanNoteServer.Controllers
 {
@@ -71,7 +73,14 @@ namespace PlanNoteServer.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "登录失败");
-                // 登录失败返回 401 Unauthorized 状态码
+
+                // 基础设施故障（Redis/数据库不可用）属于服务器内部错误，不能返回 401
+                if (ex is RedisConnectionException or RedisTimeoutException or RedisServerException)
+                {
+                    return StatusCode(500, new { message = "登录服务暂不可用，请稍后重试" });
+                }
+
+                // 业务异常（账号被禁用、入库失败等）才返回 401
                 return Unauthorized(new { message = ex.Message });
             }
         }
@@ -95,7 +104,13 @@ namespace PlanNoteServer.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "刷新令牌失败");
-                // 刷新令牌失败（如令牌无效或过期）返回 401 状态码
+
+                if (ex is RedisConnectionException or RedisTimeoutException or RedisServerException)
+                {
+                    return StatusCode(500, new { message = "令牌服务暂不可用，请稍后重试" });
+                }
+
+                // 令牌无效/过期/复用检测触发，返回 401
                 return Unauthorized(new { message = ex.Message });
             }
         }

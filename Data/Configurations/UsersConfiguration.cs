@@ -40,8 +40,8 @@ namespace PlanNoteServer.Data.Configurations
 
             // ===== 业务字段配置 =====
 
-            // 表名
-            builder.ToTable("Users");
+            // 表名（数据库统一使用小写下划线命名）
+            builder.ToTable("users");
 
             // OpenId：微信唯一标识，必填，最大长度 64，唯一索引
             builder.Property(u => u.OpenId)
@@ -85,15 +85,7 @@ namespace PlanNoteServer.Data.Configurations
             builder.Property(u => u.LastLoginTime)
                 .IsRequired(false);
 
-            // RefreshToken：刷新令牌，可选，最大长度 256
-            builder.Property(u => u.RefreshToken)
-                .IsRequired(false)
-                .HasMaxLength(256)
-                .IsUnicode(false);
-
-            // RefreshTokenExpiryTime：刷新令牌过期时间，可选
-            builder.Property(u => u.RefreshTokenExpiryTime)
-                .IsRequired(false);
+            // RefreshToken / RefreshTokenExpiryTime 已迁移到 Redis（RedisTokenStore），此处不再配置
         }
     }
 }

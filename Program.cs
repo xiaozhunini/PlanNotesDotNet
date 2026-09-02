@@ -38,11 +38,24 @@ var redisConfig = new ConfigurationOptions
     SyncTimeout = 5000
 };
 var redis = ConnectionMultiplexer.Connect(redisConfig);
+
+// 启动健康检查：立即 ping Redis，连接问题在启动时就暴露，避免登录时才"卡住"
+var redisLogger = LoggerFactory.Create(b => b.AddConsole()).CreateLogger<Program>();
+if (redis.IsConnected)
+{
+    var pong = redis.GetDatabase(redisSettings.DefaultDatabase).Ping();
+    redisLogger.LogInformation("Redis 连接正常，响应延迟：{Latency} ms", pong.TotalMilliseconds);
+}
+else
+{
+    redisLogger.LogError("Redis 连接失败！EndPoint={EndPoint}，请检查 Redis 服务是否启动、连接地址是否正确", redisSettings.ConnectionString);
+}
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
 builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
 
-// 注册AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+// 注册AutoMapper（15.0+ API：AddAutoMapper(params Type[]) 重载被移除，需用 AddMaps 回调扫描程序集）
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfile).Assembly));
 
 // 注册仓储
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
