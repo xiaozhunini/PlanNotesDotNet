@@ -30,10 +30,12 @@ namespace PlanNoteServer.Services.IServices
         Task<TokenResponse> RefreshTokenAsync(string refreshToken);
 
         /// <summary>
-        /// 撤销/注销用户的刷新令牌（通常用于主动退出登录）
+        /// 撤销/注销指定的 RefreshToken（通常用于用户主动退出登录）。
+        /// 注意：撤销单条 token 不撤销家族 —— 用户在另一设备仍可使用同家族其他 token。
+        /// 如需强制全端下线，应调用 ITokenStore.RevokeFamilyAsync。
         /// </summary>
-        /// <param name="userId">需要注销的用户ID</param>
-        /// <returns>操作成功返回 true，用户不存在返回 false</returns>
-        Task<bool> RevokeRefreshTokenAsync(long userId);
+        /// <param name="refreshToken">要撤销的 RefreshToken 字符串</param>
+        /// <returns>令牌存在且已撤销返回 true，令牌不存在返回 false</returns>
+        Task<bool> RevokeRefreshTokenAsync(string refreshToken);
     }
 }

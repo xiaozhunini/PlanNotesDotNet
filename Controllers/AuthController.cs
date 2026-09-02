@@ -101,19 +101,26 @@ namespace PlanNoteServer.Controllers
         }
 
         /// <summary>
-        /// 用户登出接口（需要携带有效的 AccessToken）
+        /// 用户登出接口（需要携带有效的 AccessToken）。
+        /// 前端需在 Body 中传 RefreshToken，登出会让该 RefreshToken 立即失效。
+        /// 注意：AccessToken 本身是无状态的，登出后到过期前仍可用，如需立即失效需要 AccessToken 黑名单（后续阶段实现）。
         /// </summary>
-        /// <returns>登出成功返回提示信息</returns>
         [HttpPost("logout")]
         [Authorize] // 必须通过 JWT 认证才能访问
-        public async Task<ActionResult> Logout()
+        public async Task<ActionResult> Logout([FromBody] RefreshTokenRequest request)
         {
             try
             {
-                // 从当前用户的 Claims 中提取用户ID（long 类型）
-                var userId = long.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
-                // 撤销用户的 RefreshToken，使其彻底失效
-                await _authService.RevokeRefreshTokenAsync(userId);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                // 撤销 RefreshToken（写入 Redis 标记为 revoked）
+                var ok = await _authService.RevokeRefreshTokenAsync(request.RefreshToken);
+                if (!ok)
+                {
+                    // 即使 RefreshToken 不存在（可能已过期或已撤销），登出仍视为成功
+                    // 不应向用户泄露令牌状态信息
+                }
                 return Ok(new { message = "登出成功" });
             }
             catch (Exception ex)

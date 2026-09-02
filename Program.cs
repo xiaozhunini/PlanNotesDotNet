@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // 配置JWT设置
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+// 配置 Redis 设置
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
+
+// 注册 Redis 连接（单例：IConnectionMultiplexer 是线程安全的长连接，全局共享一个实例）
+var redisSettings = builder.Configuration.GetSection("Redis").Get<RedisSettings>() ?? new RedisSettings();
+var redisConfig = new ConfigurationOptions
+{
+    EndPoints = { redisSettings.ConnectionString },
+    AbortOnConnectFail = redisSettings.AbortOnConnectFail,
+    Ssl = redisSettings.Ssl,
+    DefaultDatabase = redisSettings.DefaultDatabase,
+    ConnectRetry = 3,
+    ConnectTimeout = 5000,
+    SyncTimeout = 5000
+};
+var redis = ConnectionMultiplexer.Connect(redisConfig);
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
 
 // 注册AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
