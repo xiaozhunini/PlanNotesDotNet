@@ -34,6 +34,10 @@ namespace PlanNoteServer.Data.Configurations
             builder.Property(yg => yg.UserID)
                 .IsRequired();
 
+            // TagId：关联标签 ID，可空（外键 → GoalTags.ID，ClientSetNull：删标签时置 NULL，保留目标本身）
+            builder.Property(yg => yg.TagId)
+                .IsRequired(false);
+
             // Title：年度目标标题，必填，最大长度 100
             builder.Property(yg => yg.Title)
                 .IsRequired()
@@ -84,6 +88,10 @@ namespace PlanNoteServer.Data.Configurations
             builder.HasIndex(yg => yg.CreatedAt)
                 .HasDatabaseName("IX_yearly_goals_CreatedAt");
 
+            // 5) TagId 索引：按标签筛选目标（标签表建立后可改为外键索引）
+            builder.HasIndex(yg => yg.TagId)
+                .HasDatabaseName("IX_yearly_goals_TagId");
+
             // ======== 外键：UserID → Users.Id（级联删除：删用户时一并清空其所有年度目标） ========
             // 注：因为 Users 使用软删除（IsDeleted），真实 DELETE 很少触发；级联是为了物理删除时不产生孤立记录
             builder.HasOne(yg => yg.User)
@@ -91,6 +99,13 @@ namespace PlanNoteServer.Data.Configurations
                 .HasForeignKey(yg => yg.UserID)
                 .HasConstraintName("FK_yearly_goals_users_UserID")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // ======== 外键：TagId → GoalTags.ID（可空外键，ClientSetNull：删标签时只置 NULL，不删目标） ========
+            builder.HasOne(yg => yg.Tag)
+                .WithMany()
+                .HasForeignKey(yg => yg.TagId)
+                .HasConstraintName("FK_yearly_goals_goal_tags_TagId")
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

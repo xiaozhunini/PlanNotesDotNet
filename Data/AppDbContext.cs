@@ -49,11 +49,6 @@ namespace PlanNoteServer.Data
         public DbSet<YearlyGoals> YearlyGoals { get; set; }
 
         /// <summary>
-        /// 周计划集合（对应表 weekly_plans，可与年度目标可选关联）
-        /// </summary>
-        public DbSet<WeeklyPlans> WeeklyPlans { get; set; }
-
-        /// <summary>
         /// 每日日程集合（对应表 daily_schedules，按天细分的打卡时间块）
         /// </summary>
         public DbSet<DailySchedules> DailySchedules { get; set; }
@@ -62,6 +57,11 @@ namespace PlanNoteServer.Data
         /// 每日复盘集合（对应表 daily_reflections，一日三阶段反思 + 当日平均得分，1用户1天1条）
         /// </summary>
         public DbSet<DailyReflections> DailyReflections { get; set; }
+
+        /// <summary>
+        /// 目标标签集合（字典表：给年度目标打标签，如"学习"、"健康"，对应表 goal_tag）
+        /// </summary>
+        public DbSet<GoalTags> GoalTags { get; set; }
         #endregion
 
 

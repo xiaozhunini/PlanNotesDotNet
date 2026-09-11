@@ -17,6 +17,11 @@ namespace PlanNoteServer.Models
         public long UserID { get; set; }
 
         /// <summary>
+        /// 关联标签 ID（BIGINT，可空，外键 → GoalTags.ID；为 NULL 表示未打标签）
+        /// </summary>
+        public long? TagId { get; set; }
+
+        /// <summary>
         /// 年度目标标题（如：掌握 Python 编程）
         /// </summary>
         public string Title { get; set; } = string.Empty;
@@ -53,5 +58,10 @@ namespace PlanNoteServer.Models
         /// 导航属性：关联的用户（Include 查询直接拿到用户信息）
         /// </summary>
         public Users? User { get; set; }
+
+        /// <summary>
+        /// 导航属性：关联的标签（Include 查询可拿到标签名/图标/颜色）
+        /// </summary>
+        public GoalTags? Tag { get; set; }
     }
 }
