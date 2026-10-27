@@ -66,6 +66,8 @@ builder.Services.AddScoped<IPasswordHasher<PlanNoteServer.Models.Users>, Passwor
 // 注册服务
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IYearlyGoalsService, YearlyGoalsService>();
+builder.Services.AddScoped<IGoalTagsService, GoalTagsService>();
 
 // 配置JWT认证
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();

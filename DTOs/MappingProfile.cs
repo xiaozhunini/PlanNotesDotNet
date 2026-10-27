@@ -13,6 +13,12 @@ namespace PlanNoteServer.DTOs
         {
             // 用户实体映射
             CreateMap<Users, UserDto>();
+
+            // 年度目标实体映射（含关联标签导航属性，自动递归映射 GoalTags → GoalTagDto）
+            CreateMap<YearlyGoals, YearlyGoalDto>();
+
+            // 目标标签实体映射
+            CreateMap<GoalTags, GoalTagDto>();
         }
     }
 }
